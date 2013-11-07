@@ -62,3 +62,26 @@ class SpecRegistryVows(Vows.Context):
 
             def removes_id_from_specs_dict(self, registry):
                 expect(registry.specs.has_key(SPEC_ID)).to_be_false()
+
+    class GetVows(Vows.Context):
+
+        class WhenSpecIsRegistered(Vows.Context):
+
+            def topic(self):
+                registry = SpecRegistry()
+                spec = Mock()
+                registry.specs = {SPEC_ID: spec}
+                return (spec, registry[SPEC_ID])
+
+            def returns_spec_registered_using_id_provided(self, topic):
+                expected, actual = topic
+                return expect(expected).to_equal(actual)
+
+        class WhenSpecIsNotRegistered(Vows.Context):
+
+            def topic(self):
+                registry = SpecRegistry()
+                return registry[SPEC_ID]
+
+            def raises_not_registered_error(self, topic):
+                expect(topic).to_be_an_error_like(NotRegistered)

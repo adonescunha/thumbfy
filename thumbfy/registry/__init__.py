@@ -1,1 +1,0 @@
-from .spec_registry import SpecRegistry
