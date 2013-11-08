@@ -11,7 +11,7 @@
 
 from pyvows import Vows, expect
 from mock import Mock
-from django_thumbor.conf import THUMBOR_SECURITY_KEY
+from django_thumbor.conf import THUMBOR_SECURITY_KEY, THUMBOR_SERVER
 
 import thumbfy
 from thumbfy.registry import SpecRegistry

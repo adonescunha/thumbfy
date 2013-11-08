@@ -12,6 +12,8 @@
 from pyvows import Vows, expect
 from mock import Mock
 from libthumbor import CryptoURL
+from django.db.models.fields.files import ImageFieldFile
+
 from thumbfy.specs import BaseThumbfySpec
 
 
@@ -41,12 +43,44 @@ class BaseThumbfySpecVows(Vows.Context):
         def topic(self):
             spec = BaseThumbfySpec(key=KEY)
             spec.crypto = Mock(spec=CryptoURL)
-            spec.generate(image_url=IMAGE_URL)
+            spec.generate(IMAGE_URL)
             return (spec, IMAGE_URL)
 
         def calls_crypto_generate_with_passed_kwargs(self, topic):
             spec, image_url = topic
             spec.crypto.generate.assert_called_with(image_url=image_url)
+
+        class WhenArgumentIsAImageFieldInstance(Vows.Context):
+
+            class WhenFieldHasFileAssociated(Vows.Context):
+
+                def topic(self):
+                    spec = BaseThumbfySpec(key=KEY)
+                    spec.crypto = Mock(spec=CryptoURL)
+                    field = Mock()
+                    field.url = IMAGE_URL
+                    spec.generate(field)
+                    return (spec, IMAGE_URL)
+
+                def calls_crypto_generate_with_field_url(self, topic):
+                    spec, image_url = topic
+                    spec.crypto.generate.assert_called_with(
+                            image_url=image_url)
+
+            class WhenFieldHasNoFileAssociated(Vows.Context):
+
+                def topic(self):
+                    spec = BaseThumbfySpec(key=KEY)
+                    spec.default_thumb_url = '/default/thumb.jpg'
+                    spec.crypto = Mock(spec=CryptoURL)
+                    field = Mock()
+                    field.storage = None
+                    spec.generate(ImageFieldFile(None, field, None))
+                    return spec
+
+                def calls_crypto_generate_with_default_thumb_url(self, topic):
+                    topic.crypto.generate.assert_called_with(
+                            image_url=topic.default_thumb_url)
 
     class GetUrlSchema(Vows.Context):
 

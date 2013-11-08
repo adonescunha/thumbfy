@@ -14,6 +14,7 @@ from libthumbor import CryptoURL
 
 class BaseThumbfySpec(object):
 
+    default_thumb_url = ''
     url_schema = {}
 
     def __init__(self, key=None):
@@ -25,5 +26,13 @@ class BaseThumbfySpec(object):
 
         return schema
 
-    def generate(self, image_url):
+    def generate(self, obj):
+        if isinstance(obj, basestring):
+            image_url = obj
+        else:
+            try:
+                image_url = obj.url
+            except ValueError:
+                image_url = self.default_thumb_url
+
         return self.crypto.generate(**self.get_url_schema(image_url))

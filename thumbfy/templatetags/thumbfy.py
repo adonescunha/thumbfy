@@ -10,7 +10,7 @@
 
 
 from django.template import Library
-from django_thumbor.conf import THUMBOR_SECURITY_KEY
+from django_thumbor.conf import THUMBOR_SECURITY_KEY, THUMBOR_SERVER
 
 from ..registry import registry
 
@@ -22,4 +22,4 @@ register = Library()
 def thumbfy(spec_id, image_url):
     spec = registry.get_spec_instance(spec_id, key=THUMBOR_SECURITY_KEY)
 
-    return spec.generate(image_url=image_url)
+    return '%s%s' % (THUMBOR_SERVER, spec.generate(image_url=image_url))
