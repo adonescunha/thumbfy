@@ -28,4 +28,7 @@ class SpecRegistry(object):
         except KeyError:
             _raise_not_registered_error(id)
 
+    def get_spec_instance(self, spec_id, **kwargs):
+        return self.specs[spec_id](**kwargs)
+
 registry = SpecRegistry()

@@ -1,4 +1,5 @@
 django
 pyvows
 mock
+django-thumbor
 libthumbor

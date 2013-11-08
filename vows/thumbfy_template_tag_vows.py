@@ -1,9 +1,12 @@
 from pyvows import Vows, expect
 from mock import Mock
+from django_thumbor.conf import THUMBOR_SECURITY_KEY
 
 import thumbfy
 from thumbfy.registry import SpecRegistry
+from thumbfy.specs import BaseThumbfySpec
 from thumbfy.templatetags.thumbfy import thumbfy as thumbfy_tag
+
 
 
 SPEC_ID = 'spec-id'
@@ -14,12 +17,14 @@ class ThumbfyTemplateTag(Vows.Context):
 
     def topic(self):
         spec = Mock()
-        spec_registry = SpecRegistry()
-        spec_registry.register(SPEC_ID, spec)
+        spec_registry = Mock()
+        spec_registry.get_spec_instance.return_value = spec
         thumbfy.templatetags.thumbfy.registry = spec_registry
 
-        return (spec, thumbfy_tag(SPEC_ID, IMAGE_URL))
+        return (spec, spec_registry, thumbfy_tag(SPEC_ID, IMAGE_URL))
 
     def call_generate_from_spec_registered_with_the_provided_id(self, topic):
-        spec = topic[0]
+        spec, spec_registry, _ = topic
+        spec_registry.get_spec_instance.assert_called_with(SPEC_ID,
+                key=THUMBOR_SECURITY_KEY)
         spec.generate.assert_called_with(image_url=IMAGE_URL)
