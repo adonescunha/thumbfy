@@ -1,8 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# thumbfy
+# https://github.com/adonescunha/thumbfy
+
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
+# Copyright (c) 2013 Adones Cunha adonescunha@gmail.com
+
+
 from .exceptions import AlreadyRegistered, NotRegistered
 
 
 def _raise_not_registered_error(id):
     raise NotRegistered('The id %s is not registered' % id)
+
 
 class SpecRegistry(object):
 
@@ -30,5 +42,6 @@ class SpecRegistry(object):
 
     def get_spec_instance(self, spec_id, **kwargs):
         return self.specs[spec_id](**kwargs)
+
 
 registry = SpecRegistry()

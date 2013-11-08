@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# thumbfy
+# https://github.com/adonescunha/thumbfy
+
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
+# Copyright (c) 2013 Adones Cunha adonescunha@gmail.com
+
+
 from pyvows import Vows, expect
 from mock import Mock
 from django_thumbor.conf import THUMBOR_SECURITY_KEY
@@ -8,9 +19,9 @@ from thumbfy.specs import BaseThumbfySpec
 from thumbfy.templatetags.thumbfy import thumbfy as thumbfy_tag
 
 
-
 SPEC_ID = 'spec-id'
 IMAGE_URL = 'http://localhost/some/image/url.jpg'
+
 
 @Vows.batch
 class ThumbfyTemplateTag(Vows.Context):

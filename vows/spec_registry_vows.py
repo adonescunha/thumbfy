@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# thumbfy
+# https://github.com/adonescunha/thumbfy
+
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
+# Copyright (c) 2013 Adones Cunha adonescunha@gmail.com
+
+
 from pyvows import Vows, expect
 from mock import Mock
 
@@ -6,6 +17,7 @@ from thumbfy.exceptions import AlreadyRegistered, NotRegistered
 
 
 SPEC_ID = 'spec-id'
+
 
 @Vows.batch
 class SpecRegistryVows(Vows.Context):
