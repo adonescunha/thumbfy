@@ -13,13 +13,17 @@ from django.template import Library
 from django_thumbor.conf import THUMBOR_SECURITY_KEY, THUMBOR_SERVER
 
 from ..registry import registry
+from ..conf import THUMBFY_DEFAULT_SPEC
 
 
 register = Library()
 
 
 @register.simple_tag
-def thumbfy(spec_id, image_url):
+def thumbfy(obj, spec_id=None):
+    if not spec_id:
+        spec_id = THUMBFY_DEFAULT_SPEC
+
     spec = registry.get_spec_instance(spec_id, key=THUMBOR_SECURITY_KEY)
 
-    return '%s%s' % (THUMBOR_SERVER, spec.generate(image_url=image_url))
+    return '%s%s' % (THUMBOR_SERVER, spec.generate(obj))

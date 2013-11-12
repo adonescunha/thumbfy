@@ -17,6 +17,7 @@ import thumbfy
 from thumbfy.registry import SpecRegistry
 from thumbfy.specs import BaseThumbfySpec
 from thumbfy.templatetags.thumbfy import thumbfy as thumbfy_tag
+from thumbfy.conf import THUMBFY_DEFAULT_SPEC
 
 
 SPEC_ID = 'spec-id'
@@ -26,16 +27,32 @@ IMAGE_URL = 'http://localhost/some/image/url.jpg'
 @Vows.batch
 class ThumbfyTemplateTag(Vows.Context):
 
-    def topic(self):
-        spec = Mock()
-        spec_registry = Mock()
-        spec_registry.get_spec_instance.return_value = spec
-        thumbfy.templatetags.thumbfy.registry = spec_registry
+    class WhenSpecIdIsProvided(Vows.Context):
 
-        return (spec, spec_registry, thumbfy_tag(SPEC_ID, IMAGE_URL))
+        def topic(self, topic):
+            spec = Mock()
+            spec_registry = Mock()
+            spec_registry.get_spec_instance.return_value = spec
+            thumbfy.templatetags.thumbfy.registry = spec_registry
 
-    def call_generate_from_spec_registered_with_the_provided_id(self, topic):
-        spec, spec_registry, _ = topic
-        spec_registry.get_spec_instance.assert_called_with(SPEC_ID,
-                key=THUMBOR_SECURITY_KEY)
-        spec.generate.assert_called_with(image_url=IMAGE_URL)
+            return (spec, spec_registry, thumbfy_tag(IMAGE_URL, SPEC_ID))
+
+        def calls_generate_from_spec_registered_with_the_provided_id(self, topic):
+            spec, spec_registry, _ = topic
+            spec_registry.get_spec_instance.assert_called_with(SPEC_ID,
+                    key=THUMBOR_SECURITY_KEY)
+            spec.generate.assert_called_with(IMAGE_URL)
+
+    class WhenSpecIdIsNotProvided(Vows.Context):
+
+        def topic(self, topic):
+            spec = Mock()
+            spec_registry = Mock()
+            thumbfy.templatetags.thumbfy.registry = spec_registry
+
+            return (spec_registry, thumbfy_tag(IMAGE_URL))
+
+        def fetch_default_spec_from_registry(self, topic):
+            spec_registry, _ = topic
+            spec_registry.get_spec_instance.assert_called_with(
+                    THUMBFY_DEFAULT_SPEC, key=THUMBOR_SECURITY_KEY)
